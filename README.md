@@ -63,7 +63,7 @@ Since *feeds* is a list you can add additional feeds to watch if you want.
 
 ## Setting the User-Agent string
 
-Some sites behave badly depending on the user agent string provided. To set a user-agent strin
+Some sites behave badly depending on the user agent string provided. To set a user-agent string
 in the config file:
 
     useragent: ''
