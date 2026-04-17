@@ -61,6 +61,17 @@ Since *feeds* is a list you can add additional feeds to watch if you want.
       - url: https://example.org/feed/
         template: "dot org: {title} {url}"
 
+## Setting the User-Agent string
+
+Some sites behave badly depending on the user agent string provided. To set a user-agent strin
+in the config file:
+
+...
+useragent: ''
+...
+
+Whatever you add in the quotes will be used as the user agent string. 
+
 ## Develop
 
     poetry install
