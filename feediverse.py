@@ -56,7 +56,7 @@ def main():
     for feed in config['feeds']:
         if args.verbose:
             print(f"fetching {feed['url']} entries since {config['updated']}")
-        for entry in get_feed(feed['url'], config['updated']):
+        for entry in get_feed(feed['url'], config['updated'], config['useragent']):
             newest_post = max(newest_post, entry['updated'])
             entry_text = feed['template'].format(**entry)[:499]
 
@@ -97,8 +97,8 @@ def main():
         config['dupecheck'] = dupes
         save_config(config, config_file)
 
-def get_feed(feed_url, last_update):
-    feed = feedparser.parse(feed_url)
+def get_feed(feed_url, last_update, user_agent):
+    feed = feedparser.parse(feed_url, agent=user_agent)
     # RSS feeds can contain future dates that we don't want to post yet,
     # so we filter them out
     now = datetime.now(timezone.utc)
@@ -190,6 +190,7 @@ def read_config(config_file):
     config = {
         'updated': datetime(MINYEAR, 1, 1, 0, 0, 0, 0, timezone.utc),
         'dupecheck': [],
+        'useragent': '',
     }
     with open(config_file) as fh:
         cfg = yaml.load(fh, yaml.SafeLoader)
