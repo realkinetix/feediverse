@@ -84,7 +84,7 @@ def main():
             if not args.dry_run:
                 masto.status_post(
                     entry_text,
-                    visibility='unlisted',
+                    visibility=config['visibility'],
                     media_ids=image_medias
                 )
 
@@ -192,6 +192,7 @@ def read_config(config_file):
         'updated': datetime(MINYEAR, 1, 1, 0, 0, 0, 0, timezone.utc),
         'dupecheck': [],
         'useragent': '',
+        'visibility': 'unlisted',
     }
     with open(config_file) as fh:
         cfg = yaml.load(fh, yaml.SafeLoader)
