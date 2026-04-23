@@ -84,6 +84,7 @@ def main():
             if not args.dry_run:
                 masto.status_post(
                     entry_text,
+                    visibility='unlisted',
                     media_ids=image_medias
                 )
 
