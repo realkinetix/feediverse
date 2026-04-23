@@ -9,6 +9,7 @@ import feedparser
 import random
 import time
 import requests
+import pytz
 
 from bs4 import BeautifulSoup
 from mastodon import Mastodon
@@ -99,15 +100,23 @@ def main():
 
 def get_feed(feed_url, last_update, user_agent):
     feed = feedparser.parse(feed_url, agent=user_agent)
+    now = datetime.now(timezone.utc)
+#    for testyfoo in feed.entries:
+#       print("Hello")
+#       print(f"Now: {now}")
+#       print(f"Feed parsed date: {testyfoo['updated_parsed']}")
     # RSS feeds can contain future dates that we don't want to post yet,
     # so we filter them out
     now = datetime.now(timezone.utc)
     entries = [e for e in feed.entries
-               if dateutil.parser.parse(e['updated']) <= now]
+#            print(f"fetching {feed['url']} entries since {config['updated']}")
+#               if dateutil.parser.parse(e['updated_parsed']) <= now]
+               if pytz.utc.localize(datetime.fromtimestamp(time.mktime(e['updated_parsed']))) <= now]
     # Now we can filter for date normally
     if last_update:
         entries = [e for e in entries
-                   if dateutil.parser.parse(e['updated']) > last_update]
+                   if pytz.utc.localize(datetime.fromtimestamp(time.mktime(e['updated_parsed']))) > last_update]
+#                   if dateutil.parser.parse(e['updated_parsed']) > last_update]
 
     entries.sort(key=lambda e: e.updated_parsed)
     for entry in entries:
@@ -139,7 +148,8 @@ def get_entry(entry):
         'content': content,
         'hashtags': ' '.join(hashtags),
         'images': find_images(summary),
-        'updated': dateutil.parser.parse(entry['updated'])
+#        'updated': dateutil.parser.parse(entry['updated'])
+        'updated': pytz.utc.localize(datetime.fromtimestamp(time.mktime(entry.updated_parsed)))
     }
 
 def cleanup(text):
